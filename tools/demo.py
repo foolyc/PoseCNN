@@ -121,9 +121,26 @@ if __name__ == '__main__':
 
     # start a session
     saver = tf.train.Saver()
-    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.6)
+    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
     sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options))
-    saver.restore(sess, args.model)
+    # load npy
+    sess.run(tf.global_variables_initializer())
+    if 'npy' in args.model:
+        data_dict = np.load(args.model, encoding='latin1').item()
+        for op_name in data_dict:
+            with tf.variable_scope(op_name, reuse=True):
+                # Python3: dict has no module iteritems
+                for param_name, data in data_dict[op_name].items():
+                    try:
+                        var = tf.get_variable(param_name)
+                        sess.run(var.assign(data))
+                    except ValueError:
+                        print "error"
+                        pass
+    else:
+        saver.restore(sess, args.model)
     print ('Loading model weights from {:s}').format(args.model)
 
+    print args.model
+    print weights_filename
     test_net_images(sess, network, imdb, weights_filename, rgb_filenames, depth_filenames, meta_data)

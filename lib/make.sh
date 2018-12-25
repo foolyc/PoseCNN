@@ -30,10 +30,10 @@ echo 'gradient_reversal_layer'
 cd average_distance_loss
 
 nvcc -std=c++11 -c -o average_distance_loss_op_gpu.cu.o average_distance_loss_op_gpu.cu.cc \
-	-I $TF_INC -I$TF_INC/external/nsync/public -D GOOGLE_CUDA=1 -x cu -Xcompiler -fPIC -arch=sm_50
+	-I $TF_INC -D_GLIBCXX_USE_CXX11_ABI=0 -I$TF_INC/external/nsync/public -D GOOGLE_CUDA=1 -x cu -Xcompiler -fPIC -arch=sm_50
 
 g++ -std=c++11 -shared -o average_distance_loss.so average_distance_loss_op.cc \
-	average_distance_loss_op_gpu.cu.o -I $TF_INC -I$TF_INC/external/nsync/public -fPIC -lcudart -L$CUDA_PATH/lib64 -L$TF_LIB -ltensorflow_framework
+	average_distance_loss_op_gpu.cu.o -I $TF_INC -D_GLIBCXX_USE_CXX11_ABI=0 -I$TF_INC/external/nsync/public -fPIC -lcudart -L$CUDA_PATH/lib64 -L$TF_LIB -ltensorflow_framework
 
 cd ..
 echo 'average_distance_loss'
@@ -56,7 +56,7 @@ g++ -std=c++11 -c -o Hypothesis.o Hypothesis.cpp -fPIC
 g++ -std=c++11 -c -o thread_rand.o thread_rand.cpp -fPIC
 
 g++ -std=c++11 -shared -o hough_voting.so hough_voting_op.cc \
-	Hypothesis.o thread_rand.o -I $TF_INC -I$TF_INC/external/nsync/public \
+	Hypothesis.o thread_rand.o -I $TF_INC -D_GLIBCXX_USE_CXX11_ABI=0 -I$TF_INC/external/nsync/public \
         -fPIC -lcudart -lopencv_imgproc -lopencv_calib3d -lopencv_core -lgomp -lnlopt -L $CUDA_PATH/lib64 -L$TF_LIB -ltensorflow_framework
 
 cd ..
