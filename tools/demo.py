@@ -19,6 +19,8 @@ import time, os, sys
 import tensorflow as tf
 import os.path as osp
 import numpy as np
+# os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+os.environ['TF_CPP_MIN_LOG_LEVEL']='-1'
 
 def parse_args():
     """
@@ -121,7 +123,7 @@ if __name__ == '__main__':
 
     # start a session
     saver = tf.train.Saver()
-    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
+    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.6)
     sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options))
     # load npy
     sess.run(tf.global_variables_initializer())

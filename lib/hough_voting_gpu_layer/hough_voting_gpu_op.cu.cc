@@ -753,7 +753,7 @@ void HoughVotingLaucher(OpKernelContext* context,
     memset(max_indexes_host, 0, count * sizeof(int));
     for (int i = 0; i < count; i++)
     {
-      float *hmax = thrust::max_element(hough_space + i * height * width, hough_space + (i+1) * height * width);
+      float *hmax = thrust::max_element(thrust::device, hough_space + i * height * width, hough_space + (i+1) * height * width);
       max_indexes_host[i] = hmax - hough_space;
     }
     cudaMemcpy(num_max, &count, sizeof(int), cudaMemcpyHostToDevice);
